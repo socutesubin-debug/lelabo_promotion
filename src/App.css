@@ -1,0 +1,2317 @@
+@font-face {
+  font-family: "GabiaSai";
+  src: url("./assets/fonts/GabiaSai (2).ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "BellGothic";
+  src: url("./assets/fonts/BellGothicStd-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* 영문 라벨 / 캡션 (BLENDING NOTES, EAU DE PARFUM, ANOTHER 13 등) */
+  --font-en: "BellGothic", "Helvetica", sans-serif;
+  /* 한글 본문 (안내 문구 / 설명 문장 / 본문 텍스트) */
+  --font-kr-body: "RIDIBatang", "Nanum Myeongjo", serif;
+  /* 버튼 / 네비게이션 / 작은 UI 라벨 / 시스템성 텍스트 */
+  --font-ui: "Helvetica", "Arial", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  overflow: hidden;
+  background: #000;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #000;
+  font-family: var(--font-kr-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: var(--font-ui);
+  letter-spacing: 0.18em;
+  font-weight: 400;
+}
+
+#root {
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  max-width: none;
+  border: none;
+  min-height: 100vh;
+  display: block;
+}
+
+.app {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #000;
+  transform: translateZ(0);
+  isolation: isolate;
+}
+
+.audio-mute-btn {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 999;
+  padding: 8px 14px;
+  border: 0.5px solid rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: rgba(255, 255, 255, 0.85);
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.audio-mute-btn:hover {
+  background: rgba(0, 0, 0, 0.55);
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+.screen {
+  width: 100vw;
+  height: 100vh;
+  padding: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── IntroScreen ── */
+
+@keyframes perfumerIn {
+  from {
+    opacity: 0;
+    transform: scale(0.88);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.intro-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  animation: screenFadeIn 0.6s ease forwards;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+.intro-perfumer-wrap {
+  position: absolute;
+  inset: 0;
+}
+
+.intro-perfumer {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 60%;
+  display: block;
+  opacity: 0;
+  transform: scale(0.88);
+  transition: none;
+  filter: drop-shadow(0 0 40px rgba(255, 255, 255, 0.6))
+          drop-shadow(0 0 80px rgba(240, 235, 228, 0.4))
+          drop-shadow(0 0 140px rgba(220, 215, 210, 0.25));
+}
+
+.intro-perfumer--visible {
+  animation: perfumerIn 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.intro-start-btn {
+  position: absolute;
+  bottom: 10vh;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 18px 72px;
+  border: 0.5px solid rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: rgba(255, 255, 255, 0.88);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: background 0.35s ease, border-color 0.35s ease,
+              box-shadow 0.35s ease, color 0.35s ease;
+  white-space: nowrap;
+}
+
+.intro-start-btn--visible {
+  animation: fadeIn 0.9s ease forwards;
+  pointer-events: auto;
+}
+
+.intro-start-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.7);
+  color: #fff;
+  box-shadow:
+    0 0 18px rgba(255, 255, 255, 0.2),
+    0 0 48px rgba(255, 255, 255, 0.1),
+    inset 0 0 18px rgba(255, 255, 255, 0.05);
+}
+
+/* ── SensoryGuideScreen ── */
+
+.sensory-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  animation: screenFadeIn 0.6s ease forwards;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── SensoryGuideScreen ornament copy ── */
+
+@keyframes ornamentTopOpen {
+  0%   { opacity: 0; transform: translateY(70px); }
+  12%  { opacity: 1; }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes ornamentBottomOpen {
+  0%   { opacity: 0; transform: translateY(-70px); }
+  12%  { opacity: 1; }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes lineExpand {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+@keyframes dotReveal {
+  from { opacity: 0; transform: rotate(45deg) scale(0.2); }
+  to   { opacity: 1; transform: rotate(45deg) scale(1); }
+}
+
+@keyframes copyReveal {
+  from { opacity: 0; filter: blur(5px); }
+  to   { opacity: 1; filter: blur(0px); }
+}
+
+.sensory-ornament-copy {
+  position: absolute;
+  top: 11vh;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  width: min(580px, 85vw);
+}
+
+.sensory-ornament-copy::before {
+  content: '';
+  position: absolute;
+  inset: -32px -60px;
+  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.38) 0%, rgba(255, 255, 255, 0) 72%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.ornament-line {
+  display: flex;
+  align-items: center;
+  width: min(280px, 50vw);
+  gap: 10px;
+  opacity: 0;
+}
+
+.line-segment {
+  flex: 1;
+  height: 1.5px;
+  background: rgba(35, 31, 27, 0.45);
+}
+
+.line-left  { transform-origin: right center; transform: scaleX(0); }
+.line-right { transform-origin: left center;  transform: scaleX(0); }
+
+.ornament-center-dot {
+  width: 5px;
+  height: 5px;
+  flex-shrink: 0;
+  background: rgba(35, 31, 27, 0.55);
+  opacity: 0;
+}
+
+.ornament-text {
+  margin: 0;
+  font-family: var(--font-kr-body);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.75;
+  letter-spacing: -0.02em;
+  color: rgba(30, 30, 28, 0.78);
+  text-align: center;
+  opacity: 0;
+  filter: blur(5px);
+}
+
+/* triggered on --visible */
+
+.sensory-ornament-copy--visible .ornament-line.top {
+  animation: ornamentTopOpen 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.3s forwards;
+}
+
+.sensory-ornament-copy--visible .ornament-line.bottom {
+  animation: ornamentBottomOpen 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.3s forwards;
+}
+
+.sensory-ornament-copy--visible .line-segment {
+  animation: lineExpand 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.3s forwards;
+}
+
+.sensory-ornament-copy--visible .ornament-center-dot {
+  animation: dotReveal 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.55s forwards;
+}
+
+.sensory-ornament-copy--visible .ornament-text {
+  animation: copyReveal 0.65s ease 1.2s forwards;
+}
+
+.sensory-figure {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) scale(0.92);
+  height: 90vh;
+  width: auto;
+  object-fit: contain;
+  object-position: bottom center;
+  opacity: 0;
+  filter: drop-shadow(0 0 32px rgba(255, 255, 255, 0.35))
+          drop-shadow(0 0 80px rgba(240, 235, 228, 0.2));
+}
+
+.sensory-figure--visible {
+  animation: sensoryFigureIn 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes sensoryFigureIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+.sensory-start-btn {
+  position: absolute;
+  bottom: 10vh;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 18px 72px;
+  border: 0.5px solid rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: rgba(255, 255, 255, 0.88);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  transition: background 0.35s ease, border-color 0.35s ease,
+              box-shadow 0.35s ease, color 0.35s ease;
+}
+
+.sensory-start-btn--visible {
+  animation: fadeIn 0.9s ease forwards;
+  pointer-events: auto;
+}
+
+.sensory-start-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.7);
+  color: #fff;
+  box-shadow:
+    0 0 18px rgba(255, 255, 255, 0.2),
+    0 0 48px rgba(255, 255, 255, 0.1),
+    inset 0 0 18px rgba(255, 255, 255, 0.05);
+}
+
+/* ── MaterialPlaceScreen ── */
+
+@keyframes materialCopyReveal {
+  from { opacity: 0; filter: blur(4px); }
+  to   { opacity: 1; filter: blur(0px); }
+}
+
+@keyframes arrowDrop {
+  0%   { opacity: 0; transform: translateY(-10px); }
+  20%  { opacity: 1; }
+  75%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(12px); }
+}
+
+.material-place-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  animation: screenFadeIn 0.6s ease forwards;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.material-place-copy {
+  position: absolute;
+  top: 28vh;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  opacity: 0;
+  filter: blur(4px);
+}
+
+.material-place-copy--visible {
+  animation: materialCopyReveal 0.9s ease forwards;
+}
+
+.material-place-copy p {
+  margin: 0;
+  font-family: var(--font-kr-body);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.75;
+  letter-spacing: -0.02em;
+  color: rgba(30, 30, 28, 0.78);
+  text-align: center;
+}
+
+.material-arrow-wrap {
+  position: absolute;
+  top: 39vh;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+}
+
+.material-arrow-wrap--visible {
+  animation: arrowDrop 2.2s ease-in-out infinite;
+}
+
+.material-arrow {
+  width: 2px;
+  height: 90px;
+  background: linear-gradient(
+    to bottom,
+    rgba(244, 239, 230, 0),
+    rgba(244, 239, 230, 0.9),
+    rgba(198, 174, 135, 0.7)
+  );
+  position: relative;
+}
+
+.material-arrow::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  border-right: 1.5px solid rgba(198, 174, 135, 0.9);
+  border-bottom: 1.5px solid rgba(198, 174, 135, 0.9);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.material-next-btn {
+  position: absolute;
+  bottom: 10vh;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 18px 72px;
+  border: 0.5px solid rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: rgba(255, 255, 255, 0.88);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  cursor: pointer;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: background 0.35s ease, border-color 0.35s ease,
+              box-shadow 0.35s ease, color 0.35s ease;
+}
+
+.material-next-btn--visible {
+  animation: fadeIn 0.9s ease forwards;
+  pointer-events: auto;
+}
+
+.material-next-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.7);
+  color: #fff;
+  box-shadow:
+    0 0 18px rgba(255, 255, 255, 0.2),
+    0 0 48px rgba(255, 255, 255, 0.1),
+    inset 0 0 18px rgba(255, 255, 255, 0.05);
+}
+
+.select-screen {
+  background: #eee8de;
+}
+
+.result-screen {
+  background: #1e1d1a;
+  color: white;
+}
+
+.content {
+  width: min(720px, 90vw);
+  text-align: center;
+}
+
+.eyebrow {
+  margin-bottom: 20px;
+  font-family: var(--font-kr-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.65;
+}
+
+h1 {
+  margin: 0;
+  font-family: var(--font-kr-body);
+  font-size: clamp(42px, 7vw, 96px);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+}
+
+.description {
+  margin: 24px auto 40px;
+  max-width: 520px;
+  font-family: var(--font-kr-body);
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.9;
+  letter-spacing: 0.03em;
+  opacity: 0.75;
+}
+
+button {
+  padding: 16px 28px;
+  border: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+button:hover {
+  background: currentColor;
+  color: #f3f0ea;
+}
+
+.material-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(140px, 1fr));
+  gap: 16px;
+  margin: 40px 0;
+}
+
+.material-grid button {
+  height: 120px;
+}
+
+/* ── SelectedMaterialsScreen ── */
+
+@keyframes selectedTitleReveal {
+  from { opacity: 0; filter: blur(4px); }
+  to   { opacity: 1; filter: blur(0); }
+}
+
+@keyframes materialItemIn {
+  from { opacity: 0; transform: translateY(18px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.selected-material-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  animation: screenFadeIn 0.6s ease forwards;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 6vh;
+  gap: clamp(72px, 10vh, 140px);
+}
+
+.selected-material-screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(20, 16, 12, 0.15) 100%);
+  pointer-events: none;
+}
+
+/* header */
+
+.selected-material-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  filter: blur(4px);
+}
+
+.selected-material-header--visible {
+  animation: selectedTitleReveal 0.9s ease forwards;
+}
+
+.selected-material-deco-line {
+  width: 56px;
+  height: 0.5px;
+  background: rgba(38, 34, 29, 0.28);
+}
+
+.selected-material-title {
+  margin: 0;
+  font-family: var(--font-kr-body);
+  font-size: clamp(28px, 2.6vw, 46px);
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  color: rgba(38, 34, 29, 0.86);
+}
+
+/* grid */
+
+.selected-material-grid {
+  display: grid;
+  grid-template-columns: repeat(4, clamp(150px, 13vw, 230px));
+  column-gap: clamp(72px, 9vw, 140px);
+  row-gap: clamp(52px, 7vw, 110px);
+  margin: 0 auto;
+}
+
+.selected-material-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  opacity: 0;
+}
+
+.selected-material-item img {
+  width: clamp(150px, 13vw, 230px);
+  height: clamp(150px, 13vw, 230px);
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(20, 16, 12, 0.12));
+  transition: transform 0.35s ease, filter 0.35s ease;
+}
+
+.selected-material-item:hover img {
+  transform: scale(1.035);
+  filter: drop-shadow(0 8px 20px rgba(20, 16, 12, 0.22));
+}
+
+.selected-material-name {
+  font-family: var(--font-en);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  color: rgba(38, 34, 29, 0.62);
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* staggered item animations */
+.selected-material-grid--visible .selected-material-item:nth-child(1) { animation: materialItemIn 0.6s ease 0s     forwards; }
+.selected-material-grid--visible .selected-material-item:nth-child(2) { animation: materialItemIn 0.6s ease 0.25s  forwards; }
+.selected-material-grid--visible .selected-material-item:nth-child(3) { animation: materialItemIn 0.6s ease 0.50s  forwards; }
+.selected-material-grid--visible .selected-material-item:nth-child(4) { animation: materialItemIn 0.6s ease 0.75s  forwards; }
+.selected-material-grid--visible .selected-material-item:nth-child(5) { animation: materialItemIn 0.6s ease 1.00s  forwards; }
+.selected-material-grid--visible .selected-material-item:nth-child(6) { animation: materialItemIn 0.6s ease 1.25s  forwards; }
+.selected-material-grid--visible .selected-material-item:nth-child(7) { animation: materialItemIn 0.6s ease 1.50s  forwards; }
+.selected-material-grid--visible .selected-material-item:nth-child(8) { animation: materialItemIn 0.6s ease 1.75s  forwards; }
+
+/* button */
+
+.selected-material-btn-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: -44px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.selected-material-btn-wrap--visible {
+  animation: fadeIn 0.9s ease forwards;
+  pointer-events: auto;
+}
+
+.selected-material-btn-label {
+  font-family: var(--font-en);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(38, 34, 29, 0.38);
+}
+
+.selected-material-btn {
+  padding: 18px 72px;
+  border: 0.5px solid rgba(38, 34, 29, 0.35);
+  background: rgba(38, 34, 29, 0.05);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: rgba(38, 34, 29, 0.82);
+  font-family: var(--font-ui);
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.35s ease, border-color 0.35s ease,
+              box-shadow 0.35s ease, color 0.35s ease;
+}
+
+.selected-material-btn:hover {
+  background: rgba(38, 34, 29, 0.1);
+  border-color: rgba(38, 34, 29, 0.6);
+  color: rgba(38, 34, 29, 0.95);
+  box-shadow:
+    0 0 14px rgba(38, 34, 29, 0.08),
+    inset 0 0 12px rgba(38, 34, 29, 0.04);
+}
+
+/* ── BlendingVortexScreen ── */
+
+.blending-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  animation: screenFadeIn 0.6s ease forwards;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.blending-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 35%, rgba(0, 0, 0, 0.38) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── beaker ── */
+
+.blending-beaker-wrap {
+  position: fixed;
+  left: 50%;
+  top: 45%;
+  transform: translate(-50%, -50%);
+  width: auto;
+  height: 88vh;
+  z-index: 2;
+}
+
+.blending-beaker-img {
+  position: relative;
+  width: auto;
+  height: 88vh;
+  display: block;
+  opacity: 0;
+  z-index: 3;
+}
+
+.blending-beaker-wrap--visible .blending-beaker-img {
+  animation: beakerFadeIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes beakerFadeIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── beaker shadow ── */
+
+.beaker-shadow {
+  position: absolute;
+  bottom: -2%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 72%;
+  height: 0;
+  padding-bottom: 8%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.45) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── beaker glow ── */
+
+.beaker-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 55%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle,
+    rgba(244, 220, 170, 0.45) 0%,
+    rgba(244, 210, 140, 0.18) 50%,
+    transparent 75%
+  );
+  opacity: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.blending-beaker-wrap--visible .beaker-glow {
+  animation: beakerGlowPulse 2.2s ease-in-out 0.8s infinite;
+}
+
+@keyframes beakerGlowPulse {
+  0%, 100% { opacity: 0.18; transform: translate(-50%, -50%) scale(1); }
+  50%       { opacity: 0.42; transform: translate(-50%, -50%) scale(1.18); }
+}
+
+/* ── inventory tray ── */
+
+.inventory-tray {
+  position: fixed;
+  bottom: 2vh;
+  left: 50%;
+  transform: translateX(-50%) translateY(6px);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  width: 94vw;
+  box-sizing: border-box;
+  background: rgba(255, 252, 242, 0.10);
+  border: 1px solid rgba(255, 244, 210, 0.28);
+  border-radius: 10px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  z-index: 4;
+}
+
+.inventory-tray--visible {
+  animation: inventoryAppear 0.5s ease forwards;
+}
+
+@keyframes inventoryAppear {
+  from { opacity: 0; transform: translateX(-50%) translateY(6px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.inventory-slot {
+  flex: 1;
+  height: clamp(110px, 13vw, 200px);
+  background: rgba(255, 250, 232, 0.07);
+  border: 1px solid rgba(255, 244, 200, 0.22);
+  border-radius: 5px;
+}
+
+/* ── mat-item: 하단 바운스 등장 → 비커 입장 ── */
+
+.mat-item {
+  position: fixed;
+  bottom: 6vh;
+  width: clamp(80px, 7.5vw, 130px);
+  height: auto;
+  max-height: clamp(80px, 7.5vw, 130px);
+  object-fit: contain;
+  opacity: 0;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.mat-pos-01 { left: 10%; }
+.mat-pos-02 { left: 21%; }
+.mat-pos-03 { left: 33%; }
+.mat-pos-04 { left: 44%; }
+.mat-pos-05 { left: 56%; }
+.mat-pos-06 { left: 67%; }
+.mat-pos-07 { left: 79%; }
+.mat-pos-08 { left: 90%; }
+
+@keyframes matBounceIn {
+  0%   { transform: translateX(-50%) translateY(90px) scale(0.7); opacity: 0; }
+  55%  { transform: translateX(-50%) translateY(-10px) scale(1.08); opacity: 1; }
+  78%  { transform: translateX(-50%) translateY(4px) scale(0.97);   opacity: 1; }
+  100% { transform: translateX(-50%) translateY(0px) scale(1);      opacity: 1; }
+}
+
+.mat-item--bouncing {
+  animation: matBounceIn 0.55s cubic-bezier(0.34, 1.2, 0.64, 1) var(--delay, 0s) forwards;
+}
+
+/* 비커 중심 ≈ left:50%, top:45% / 재료 중심 ≈ top:84vh → Y 이동 약 -42vh */
+
+@keyframes matEnter01 {
+  0%   { transform: translateX(-50%) scale(1);                              opacity: 1; }
+  50%  { transform: translate(calc(-50% + 20vw), -25vh) scale(0.55);       opacity: 0.9; }
+  100% { transform: translate(calc(-50% + 40vw), -50vh) scale(0.05);       opacity: 0; }
+}
+@keyframes matEnter02 {
+  0%   { transform: translateX(-50%) scale(1);                              opacity: 1; }
+  50%  { transform: translate(calc(-50% + 15vw), -25vh) scale(0.55);       opacity: 0.9; }
+  100% { transform: translate(calc(-50% + 29vw), -50vh) scale(0.05);       opacity: 0; }
+}
+@keyframes matEnter03 {
+  0%   { transform: translateX(-50%) scale(1);                              opacity: 1; }
+  50%  { transform: translate(calc(-50% +  9vw), -25vh) scale(0.55);       opacity: 0.9; }
+  100% { transform: translate(calc(-50% + 17vw), -50vh) scale(0.05);       opacity: 0; }
+}
+@keyframes matEnter04 {
+  0%   { transform: translateX(-50%) scale(1);                              opacity: 1; }
+  50%  { transform: translate(calc(-50% +  3vw), -25vh) scale(0.55);       opacity: 0.9; }
+  100% { transform: translate(calc(-50% +  6vw), -50vh) scale(0.05);       opacity: 0; }
+}
+@keyframes matEnter05 {
+  0%   { transform: translateX(-50%) scale(1);                              opacity: 1; }
+  50%  { transform: translate(calc(-50% -  3vw), -25vh) scale(0.55);       opacity: 0.9; }
+  100% { transform: translate(calc(-50% -  6vw), -50vh) scale(0.05);       opacity: 0; }
+}
+@keyframes matEnter06 {
+  0%   { transform: translateX(-50%) scale(1);                              opacity: 1; }
+  50%  { transform: translate(calc(-50% -  9vw), -25vh) scale(0.55);       opacity: 0.9; }
+  100% { transform: translate(calc(-50% - 17vw), -50vh) scale(0.05);       opacity: 0; }
+}
+@keyframes matEnter07 {
+  0%   { transform: translateX(-50%) scale(1);                              opacity: 1; }
+  50%  { transform: translate(calc(-50% - 15vw), -25vh) scale(0.55);       opacity: 0.9; }
+  100% { transform: translate(calc(-50% - 29vw), -50vh) scale(0.05);       opacity: 0; }
+}
+@keyframes matEnter08 {
+  0%   { transform: translateX(-50%) scale(1);                              opacity: 1; }
+  50%  { transform: translate(calc(-50% - 20vw), -25vh) scale(0.55);       opacity: 0.9; }
+  100% { transform: translate(calc(-50% - 40vw), -50vh) scale(0.05);       opacity: 0; }
+}
+
+/* higher specificity than .mat-item--bouncing → overrides bounce animation */
+.mat-item--bouncing.mat-item--entering.mat-pos-01 { animation: matEnter01 0.88s ease-in forwards; }
+.mat-item--bouncing.mat-item--entering.mat-pos-02 { animation: matEnter02 0.88s ease-in forwards; }
+.mat-item--bouncing.mat-item--entering.mat-pos-03 { animation: matEnter03 0.88s ease-in forwards; }
+.mat-item--bouncing.mat-item--entering.mat-pos-04 { animation: matEnter04 0.88s ease-in forwards; }
+.mat-item--bouncing.mat-item--entering.mat-pos-05 { animation: matEnter05 0.88s ease-in forwards; }
+.mat-item--bouncing.mat-item--entering.mat-pos-06 { animation: matEnter06 0.88s ease-in forwards; }
+.mat-item--bouncing.mat-item--entering.mat-pos-07 { animation: matEnter07 0.88s ease-in forwards; }
+.mat-item--bouncing.mat-item--entering.mat-pos-08 { animation: matEnter08 0.88s ease-in forwards; }
+
+/* ── beaker outglow (재료 흡수 시 비커 실루엣에 drop-shadow glow) ── */
+
+@keyframes beakerOutglow {
+  /* 재료 입장 타이밍 (bouncing 시작 기준): 2700 3080 3460 3840 4220 4600 4980 5360 ms → 총 7s */
+  0%, 46.5% { filter: drop-shadow(0 0  0px rgba(244, 220, 150, 0)); }
+  48%        { filter: drop-shadow(0 0 55px rgba(255, 248, 210, 0.95)) drop-shadow(0 0 110px rgba(244, 215, 140, 0.55)); }
+  49.5%      { filter: drop-shadow(0 0  0px rgba(244, 220, 150, 0)); }
+  51.5%      { filter: drop-shadow(0 0 50px rgba(255, 248, 210, 0.88)) drop-shadow(0 0  96px rgba(244, 215, 140, 0.50)); }
+  53%        { filter: drop-shadow(0 0  0px rgba(244, 220, 150, 0)); }
+  57.5%      { filter: drop-shadow(0 0 50px rgba(255, 248, 210, 0.88)) drop-shadow(0 0  96px rgba(244, 215, 140, 0.50)); }
+  59%        { filter: drop-shadow(0 0  0px rgba(244, 220, 150, 0)); }
+  62.5%      { filter: drop-shadow(0 0 50px rgba(255, 248, 210, 0.88)) drop-shadow(0 0  96px rgba(244, 215, 140, 0.50)); }
+  64%        { filter: drop-shadow(0 0  0px rgba(244, 220, 150, 0)); }
+  68.5%      { filter: drop-shadow(0 0 50px rgba(255, 248, 210, 0.88)) drop-shadow(0 0  96px rgba(244, 215, 140, 0.50)); }
+  70%        { filter: drop-shadow(0 0  0px rgba(244, 220, 150, 0)); }
+  73.5%      { filter: drop-shadow(0 0 50px rgba(255, 248, 210, 0.88)) drop-shadow(0 0  96px rgba(244, 215, 140, 0.50)); }
+  75%        { filter: drop-shadow(0 0  0px rgba(244, 220, 150, 0)); }
+  79.5%      { filter: drop-shadow(0 0 50px rgba(255, 248, 210, 0.88)) drop-shadow(0 0  96px rgba(244, 215, 140, 0.50)); }
+  81%        { filter: drop-shadow(0 0  0px rgba(244, 220, 150, 0)); }
+  84.5%      { filter: drop-shadow(0 0 50px rgba(255, 248, 210, 0.88)) drop-shadow(0 0  96px rgba(244, 215, 140, 0.50)); }
+  86%        { filter: drop-shadow(0 0  0px rgba(244, 220, 150, 0)); }
+  100%       { filter: drop-shadow(0 0  0px rgba(244, 220, 150, 0)); }
+}
+
+.blending-beaker-wrap--active .blending-beaker-img {
+  opacity: 1;
+  animation: beakerOutglow 7s linear forwards;
+}
+
+/* ── BlendingVortexScreen exit (카메라 줌인 전환) ── */
+
+@keyframes blendingExit {
+  from { transform: scale(1);    filter: brightness(1); }
+  to   { transform: scale(1.14); filter: brightness(0.08); }
+}
+
+.blending-screen--exit {
+  animation: blendingExit 0.75s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+  transform-origin: center center;
+}
+
+/* ── 화면 공통 fade-in + GPU 레이어 고정 ── */
+
+.intro-screen,
+.sensory-screen,
+.material-place-screen,
+.selected-material-screen,
+.blending-screen,
+.mixing-process-screen {
+  will-change: opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+@keyframes screenFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ════════════════════════════════════════════════
+   MixingProcessScreen  (step 5)
+   ════════════════════════════════════════════════ */
+
+.mixing-process-screen {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  transform-origin: center center;
+  animation: screenFadeIn 0.6s ease forwards,
+             cameraSettleIn 2.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes cameraSettleIn {
+  from { transform: scale(1.08) translateY(-1%); }
+  to   { transform: scale(1)    translateY(0);   }
+}
+
+/* ── 메인 이미지 / 서브 이미지 교차 fade (섞는 느낌) ── */
+
+.mixing-main-img,
+.mixing-sub-img {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.mixing-main-img {
+  z-index: 1;
+  filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.72))
+          drop-shadow(0 8px 20px rgba(0, 0, 0, 0.5));
+}
+
+.mixing-sub-img {
+  z-index: 2;
+  animation: mixSubFade 3.2s ease-in-out infinite;
+  filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.72))
+          drop-shadow(0 8px 20px rgba(0, 0, 0, 0.5));
+}
+
+@keyframes mixSubFade {
+  0%, 15%   { opacity: 0; }
+  40%, 60%  { opacity: 1; }
+  85%, 100% { opacity: 0; }
+}
+
+/* ── vignette ── */
+
+.mixing-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.48) 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ── mixing glow ── */
+
+.mixing-glow {
+  position: absolute;
+  left: 50%; top: 52%;
+  transform: translate(-50%, -50%);
+  width: clamp(180px, 22vw, 360px);
+  height: clamp(180px, 22vw, 360px);
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    rgba(244, 220, 170, 0.22) 0%,
+    rgba(244, 210, 140, 0.08) 55%,
+    transparent 78%
+  );
+  animation: mixGlowPulse 3.6s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+@keyframes mixGlowPulse {
+  0%, 100% { opacity: 0.55; transform: translate(-50%, -50%) scale(1);    }
+  50%       { opacity: 0.95; transform: translate(-50%, -50%) scale(1.14); }
+}
+
+/* ── liquid ripple ── */
+
+.liquid-ripple {
+  position: absolute;
+  left: 50%; top: 52%;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 50%;
+  animation: rippleExpand 3.8s ease-out infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.liquid-ripple-2 { animation-delay: 1.27s; }
+.liquid-ripple-3 { animation-delay: 2.54s; }
+
+@keyframes rippleExpand {
+  0%   { width: 50px;  height: 18px; opacity: 0.5; transform: translate(-50%, -50%); }
+  100% { width: 260px; height: 95px; opacity: 0;   transform: translate(-50%, -50%); }
+}
+
+/* ── 상단 안내 문구 ── */
+
+.mixing-copy {
+  position: absolute;
+  left: 12%;
+  top: 50%;
+  transform: translateY(calc(-50% + 8px));
+  font-family: var(--font-kr-body);
+  font-size: clamp(18px, 2vw, 24px);
+  font-weight: 400;
+  color: rgba(255, 248, 228, 0.92);
+  letter-spacing: 0.04em;
+  text-align: left;
+  line-height: 1.75;
+  padding: 48px 96px 48px 48px;
+  background: radial-gradient(
+    ellipse at left center,
+    rgba(6, 4, 2, 0.65) 0%,
+    rgba(6, 4, 2, 0.35) 40%,
+    rgba(6, 4, 2, 0.10) 70%,
+    transparent 100%
+  );
+  border: none;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 3;
+  animation: mixCopyFade 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.9s forwards;
+}
+
+@keyframes mixCopyFade {
+  from { opacity: 0; transform: translateY(calc(-50% + 14px)); }
+  to   { opacity: 1; transform: translateY(-50%);              }
+}
+
+/* ── 하단 진행 타이머 ── */
+
+.mixing-progress {
+  position: absolute;
+  bottom: 8vh;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+  z-index: 3;
+  padding: 24px 64px 28px;
+  background: radial-gradient(
+    ellipse at center bottom,
+    rgba(6, 4, 2, 0.55) 0%,
+    rgba(6, 4, 2, 0.22) 55%,
+    transparent 100%
+  );
+  white-space: nowrap;
+}
+
+.mixing-progress-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  animation: progressFade 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes progressFade {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+.mixing-progress-time {
+  font-family: var(--font-en);
+  font-size: clamp(12px, 1vw, 16px);
+  color: rgba(255, 244, 200, 0.48);
+  letter-spacing: 0.06em;
+}
+
+.mixing-progress-label {
+  font-family: var(--font-en);
+  font-size: clamp(12px, 1.1vw, 18px);
+  color: rgba(255, 248, 222, 0.78);
+  letter-spacing: 0.22em;
+}
+
+/* ── 우측 소스 노트 ── */
+
+.mixing-notes {
+  position: absolute;
+  right: 12%;
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: right;
+  pointer-events: none;
+  z-index: 3;
+  padding: 48px 48px 48px 96px;
+  background: radial-gradient(
+    ellipse at right center,
+    rgba(6, 4, 2, 0.65) 0%,
+    rgba(6, 4, 2, 0.35) 40%,
+    rgba(6, 4, 2, 0.10) 70%,
+    transparent 100%
+  );
+}
+
+.mixing-note-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  animation: noteItemFade 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes noteItemFade {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+.mixing-note-num {
+  font-family: var(--font-en);
+  font-size: clamp(10px, 0.85vw, 13px);
+  color: rgba(255, 244, 200, 0.38);
+  letter-spacing: 0.18em;
+}
+
+.mixing-note-text {
+  font-family: var(--font-kr-body);
+  font-size: clamp(14px, 1.25vw, 20px);
+  font-weight: 400;
+  color: rgba(255, 248, 228, 0.85);
+  letter-spacing: 0.03em;
+  line-height: 1.85;
+  margin: 0;
+  text-align: right;
+}
+
+/* ── 다음 버튼 ── */
+
+
+/* ══════════════════════════════════════════════
+   FinalScentScreen
+══════════════════════════════════════════════ */
+
+.final-scent-screen {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  will-change: opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  animation: screenFadeIn 0.6s ease forwards;
+}
+
+.final-scent-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 38%,
+    rgba(0, 0, 0, 0.48) 100%
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ── 상단 문구 (ornament 색상 오버라이드) ── */
+
+.final-scent-screen .sensory-ornament-copy {
+  top: calc(11vh - 4px);
+}
+
+.final-scent-screen .sensory-ornament-copy::before {
+  background: radial-gradient(ellipse at center, rgba(4, 3, 1, 0.20) 0%, rgba(4, 3, 1, 0) 72%);
+}
+
+.final-scent-screen .line-segment {
+  background: rgba(255, 248, 228, 0.30);
+}
+
+.final-scent-screen .ornament-center-dot {
+  background: rgba(255, 248, 228, 0.55);
+}
+
+.final-scent-screen .ornament-text {
+  color: rgba(255, 248, 228, 0.92);
+  font-weight: 700;
+  text-shadow:
+    0 0 20px rgba(4, 3, 1, 0.95),
+    0 0 40px rgba(4, 3, 1, 0.80),
+    0 0 70px rgba(4, 3, 1, 0.55);
+}
+
+.final-main-copy {
+  position: absolute;
+  top: 8vh;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-kr-body);
+  font-size: clamp(16px, 1.6vw, 24px);
+  font-weight: 400;
+  color: rgba(255, 248, 228, 0.82);
+  letter-spacing: 0.03em;
+  line-height: 1.8;
+  text-align: center;
+  white-space: nowrap;
+  margin: 0;
+  text-shadow:
+    0 0 20px rgba(4, 3, 1, 0.95),
+    0 0 40px rgba(4, 3, 1, 0.80),
+    0 0 70px rgba(4, 3, 1, 0.55);
+  opacity: 0;
+  filter: blur(5px);
+  z-index: 3;
+  pointer-events: none;
+}
+
+.final-main-copy--visible {
+  animation: blurReveal 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes blurReveal {
+  from { opacity: 0; filter: blur(5px); transform: translateX(-50%) translateY(4px); }
+  to   { opacity: 1; filter: blur(0);   transform: translateX(-50%) translateY(0);   }
+}
+
+/* ── 좌측 정보 패널 ── */
+
+.final-deco-img {
+  position: absolute;
+  top: 50%;
+  left: 6%;
+  transform: translateY(-50%);
+  width: 24vw;
+  height: auto;
+  object-fit: contain;
+  object-position: center left;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.final-deco-img--visible {
+  animation: decoFadeIn 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes decoFadeIn {
+  from { opacity: 0; transform: translateY(calc(-50% + 18px)); }
+  to   { opacity: 0.55; transform: translateY(-50%); }
+}
+
+.final-info-panel {
+  position: absolute;
+  left: 10vw;
+  top: 50%;
+  transform: translateY(calc(-50% + 18px));
+  width: clamp(300px, 32vw, 520px);
+  opacity: 0;
+  z-index: 3;
+  pointer-events: none;
+  isolation: isolate;
+  text-align: left;
+}
+
+
+.final-info-panel--visible {
+  animation: finalPanelIn 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes finalPanelIn {
+  from { opacity: 0; transform: translateY(calc(-50% + 18px)); }
+  to   { opacity: 1; transform: translateY(-50%); }
+}
+
+.final-kicker {
+  display: block;
+  font-family: var(--font-en);
+  font-size: clamp(10px, 0.8vw, 12px);
+  letter-spacing: 0.28em;
+  color: rgba(220, 208, 186, 0.70);
+  margin-bottom: 8px;
+  opacity: 0;
+}
+
+.final-info-panel--visible .final-kicker {
+  animation: finalFadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.05s forwards;
+}
+
+.final-scent-name {
+  font-family: var(--font-en);
+  font-size: clamp(32px, 3.8vw, 58px);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(238, 228, 210, 0.96);
+  margin: 0 0 16px;
+  line-height: 1.05;
+  opacity: 0;
+}
+
+.final-info-panel--visible .final-scent-name {
+  animation: finalFadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+}
+
+.final-description {
+  font-family: var(--font-kr-body);
+  font-size: clamp(13px, 1.05vw, 16px);
+  font-weight: 400;
+  color: rgba(210, 198, 178, 0.88);
+  line-height: 1.75;
+  letter-spacing: -0.03em;
+  margin: 0 0 14px;
+  opacity: 0;
+}
+
+.final-info-panel--visible .final-description {
+  animation: finalFadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.35s forwards;
+}
+
+.final-quote {
+  font-family: var(--font-en);
+  font-size: clamp(11px, 0.9vw, 13px);
+  font-style: italic;
+  color: rgba(180, 166, 144, 0.72);
+  letter-spacing: 0.02em;
+  line-height: 1.75;
+  margin: 0 0 20px;
+  opacity: 0;
+}
+
+.final-info-panel--visible .final-quote {
+  animation: finalFadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.50s forwards;
+}
+
+.final-divider {
+  width: 0;
+  height: 0.5px;
+  background: rgba(200, 186, 162, 0.30);
+  margin-bottom: 20px;
+}
+
+.final-info-panel--visible .final-divider {
+  animation: dividerExpand 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.65s forwards;
+}
+
+@keyframes dividerExpand {
+  from { width: 0; }
+  to   { width: 75%; }
+}
+
+/* ── Scent Profile Graph ── */
+
+.scent-profile {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.scent-profile-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+}
+
+.scent-profile-label {
+  font-family: var(--font-en);
+  font-size: clamp(9px, 0.75vw, 11px);
+  letter-spacing: 0.18em;
+  color: rgba(200, 186, 162, 0.80);
+  width: 65px;
+  flex-shrink: 0;
+}
+
+.scent-bar {
+  flex: 1;
+  max-width: 300px;
+  height: 4px;
+  background: rgba(200, 186, 162, 0.18);
+  position: relative;
+}
+
+.scent-bar-fill {
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, rgba(140, 108, 62, 0.80) 0%, rgba(210, 178, 118, 0.95) 55%, rgba(242, 222, 172, 1) 100%);
+  animation: scentBarFill 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes scentBarFill {
+  from { width: 0; }
+  to   { width: var(--fill); }
+}
+
+@keyframes finalFadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+/* ── 향수병 (우측) ── */
+
+.final-bottle-wrap {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: clamp(120px, 13vw, 220px);
+  opacity: 0;
+  z-index: 2;
+  pointer-events: auto;
+}
+
+.final-bottle-wrap--visible {
+  animation: bottleIn 1.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes bottleIn {
+  from { opacity: 0; transform: translate(-50%, calc(-50% + 22px)) scale(0.93); }
+  to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+.final-bottle-floater {
+  animation: bottleFloat 3.4s ease-in-out 2.2s infinite;
+}
+
+@keyframes bottleFloat {
+  0%, 100% { transform: translateY(0)    rotate(0deg);   }
+  30%       { transform: translateY(-11px) rotate(-0.8deg); }
+  70%       { transform: translateY(-6px)  rotate(0.6deg);  }
+}
+
+.final-bottle-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 0 40px rgba(255, 255, 255, 0.6))
+          drop-shadow(0 0 80px rgba(240, 235, 228, 0.4))
+          drop-shadow(0 0 140px rgba(220, 215, 210, 0.25));
+  transform: scale(1);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.final-bottle-wrap:hover .final-bottle-img {
+  transform: scale(1.09);
+}
+
+/* ── 버튼 ── */
+
+.final-scent-btn {
+  position: absolute;
+  right: 8%;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 16px 54px;
+  border: 0.5px solid rgba(255, 248, 228, 0.36);
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: rgba(255, 248, 228, 0.80);
+  font-family: var(--font-ui);
+  font-size: clamp(12px, 0.95vw, 15px);
+  letter-spacing: 0.22em;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 4;
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.final-scent-btn--visible {
+  animation: finalBtnFadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  pointer-events: auto;
+}
+
+@keyframes finalBtnFadeUp {
+  from { opacity: 0; transform: translateY(calc(-50% + 6px)); }
+  to   { opacity: 1; transform: translateY(-50%); }
+}
+
+.final-scent-btn:hover {
+  background: rgba(255, 255, 255, 0.11);
+  border-color: rgba(255, 248, 228, 0.58);
+}
+
+/* ══════════════════════════════════════
+   LabelTypingScreen
+══════════════════════════════════════ */
+
+.label-typing-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  animation: screenFadeIn 0.6s ease forwards;
+}
+
+.label-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 8, 6, 0.35);
+  z-index: 0;
+}
+
+/* ── 타자기 래퍼 ── */
+
+.typewriter-wrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, calc(-50% + 30px - 4px));
+  width: clamp(520px, 58vw, 860px);
+  opacity: 0;
+  z-index: 2;
+}
+
+.typewriter-wrap--visible {
+  animation: typewriterIn 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+}
+
+@keyframes typewriterIn {
+  from { opacity: 0; transform: translate(-50%, calc(-50% + 30px - 4px)); }
+  to   { opacity: 1; transform: translate(-50%, calc(-50% - 4px));         }
+}
+
+.typewriter-inner {
+  position: relative;
+  width: 100%;
+  /* 이미지 비율 고정(스크린샷 기준 485:576) → top/left % 값이 정상 동작 */
+  aspect-ratio: 485 / 576;
+}
+
+.typewriter-pressed {
+  animation: typewriterBump 80ms ease forwards;
+}
+
+@keyframes typewriterBump {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(1px); }
+  100% { transform: translateY(0px); }
+}
+
+.typewriter-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ── 라벨 종이 텍스트 레이어 ── */
+
+.label-paper-area {
+  position: absolute;
+  top: 12%;
+  left: 33%;
+  width: 64%;
+  height: 30%;
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 1% 3%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.label-paper-text {
+  font-family: "Courier Prime", "Courier New", monospace;
+  font-size: clamp(14px, 1.4vw, 22px);
+  color: rgba(28, 25, 22, 0.86);
+  letter-spacing: 0.02em;
+  line-height: 1.35;
+  text-align: left;
+  width: 100%;
+  pointer-events: none;
+  user-select: none;
+  font-weight: 300;
+}
+
+.label-line {
+  display: block;
+  min-height: 1.35em;
+  white-space: pre;
+}
+
+.typing-cursor {
+  display: inline-block;
+  width: 1.5px;
+  height: 0.9em;
+  background: rgba(28, 25, 22, 0.72);
+  vertical-align: text-bottom;
+  margin-left: 1px;
+  animation: cursorBlink 0.55s step-end infinite;
+}
+
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* ── 키 눌림 이펙트 ── */
+
+.typewriter-key-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.typewriter-key-hit {
+  position: absolute;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(16, 12, 8, 0.50);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 2px 5px rgba(0, 0, 0, 0.60),
+    0 1px 0 rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(1);
+  animation: keyPress 220ms ease forwards;
+}
+
+@keyframes keyPress {
+  0%   { opacity: 0.85; transform: translate(-50%, -50%) scale(1);    }
+  35%  { opacity: 1;    transform: translate(-50%, -50%) scale(0.80); }
+  100% { opacity: 0;    transform: translate(-50%, -50%) scale(0.92); }
+}
+
+/* ── 라벨 완성 버튼 ── */
+
+.label-complete-button {
+  position: absolute;
+  bottom: 5vh;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.label-complete-button--visible {
+  animation: fadeIn 0.8s ease forwards;
+  pointer-events: auto;
+}
+
+.label-complete-kicker {
+  font-family: var(--font-en);
+  font-size: clamp(9px, 0.7vw, 11px);
+  letter-spacing: 0.35em;
+  color: rgba(240, 232, 218, 0.42);
+}
+
+.label-complete-btn {
+  padding: 16px 64px;
+  border: 0.5px solid rgba(240, 232, 218, 0.38);
+  background: rgba(240, 232, 218, 0.06);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: rgba(240, 232, 218, 0.85);
+  font-family: var(--font-ui);
+  font-size: clamp(12px, 0.95vw, 15px);
+  letter-spacing: 0.22em;
+  cursor: pointer;
+  transition: background 0.28s ease, border-color 0.28s ease, color 0.28s ease;
+  white-space: nowrap;
+}
+
+.label-complete-btn:hover {
+  background: rgba(240, 232, 218, 0.13);
+  border-color: rgba(240, 232, 218, 0.62);
+  color: rgba(240, 232, 218, 1);
+}
+
+/* ── 라벨지 등장 오버레이 ── */
+
+/* ═══════════════════════════════════════════════
+   LabelingPackagingScreen
+═══════════════════════════════════════════════ */
+
+.labeling-packaging-screen {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.labeling-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.55) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── 공통 오브젝트 베이스 ── */
+.ritual-object {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  z-index: 10;
+}
+
+/* ── object-glow: 드래그 가능 표시 ── */
+@keyframes lpGlowPulse {
+  0%, 100% { filter: drop-shadow(0 0 8px rgba(220, 205, 170, 0.0)); }
+  50%       { filter: drop-shadow(0 0 18px rgba(220, 205, 170, 0.55)); }
+}
+
+.object-glow {
+  animation: lpGlowPulse 2.2s ease-in-out infinite;
+}
+
+/* ── drop-zone: 드롭 대상 표시 ── */
+@keyframes lpDropZonePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(210, 195, 155, 0); }
+  50%       { box-shadow: 0 0 0 18px rgba(210, 195, 155, 0.10); }
+}
+
+/* ── 안내 문구 (ornament 색상 오버라이드) ── */
+.labeling-packaging-screen .sensory-ornament-copy::before {
+  background: radial-gradient(ellipse at center, rgba(4, 3, 1, 0.20) 0%, rgba(4, 3, 1, 0) 72%);
+}
+
+.labeling-packaging-screen .line-segment {
+  background: rgba(244, 239, 230, 0.30);
+}
+
+.labeling-packaging-screen .ornament-center-dot {
+  background: rgba(244, 239, 230, 0.55);
+}
+
+.labeling-packaging-screen .ornament-text {
+  color: rgba(244, 239, 230, 0.92);
+  font-weight: 700;
+  text-shadow:
+    0 0 20px rgba(4, 3, 1, 0.95),
+    0 0 40px rgba(4, 3, 1, 0.80),
+    0 0 70px rgba(4, 3, 1, 0.55);
+}
+
+/* ── 왼손 ── */
+@keyframes leftHandIn {
+  from { transform: translateX(-55%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+@keyframes leftHandOut {
+  from { transform: translateX(0);    opacity: 1; }
+  to   { transform: translateX(-80%); opacity: 0; }
+}
+
+.left-hand {
+  width: clamp(500px, 46vw, 840px);
+  left: -2vw;
+  top: 8vh;
+  z-index: 22;
+}
+
+.left-hand--in {
+  animation:
+    leftHandIn  1.0s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both,
+    leftHandOut 0.8s cubic-bezier(0.55, 0, 1, 0.45) 2.4s forwards;
+}
+
+/* ── 라벨 ── */
+@keyframes labelWithHand {
+  from { opacity: 0; transform: translateX(-30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.loose-label {
+  width: clamp(180px, 16vw, 280px);
+  left: 22vw;
+  top: 18vh;
+  cursor: default;
+  z-index: 21;   /* 손보다 위에 */
+  opacity: 0;
+}
+
+/* 손이 먼저 등장한 후에 등장 */
+.loose-label--with-hand {
+  animation: labelWithHand 1.0s cubic-bezier(0.22, 1, 0.36, 1) 1.2s both;
+}
+
+/* 손이 빠진 후 — 이미 보이는 상태이므로 재애니메이션 없이 포인터만 활성 */
+.loose-label--settled {
+  opacity: 1;
+  cursor: grab;
+  pointer-events: auto;
+}
+
+.loose-label--dragging {
+  cursor: grabbing;
+  filter: drop-shadow(0 8px 24px rgba(0,0,0,0.35));
+}
+
+/* 상자 봉인 단계: 라벨이 좌측에 다시 등장 */
+@keyframes labelResealIn {
+  from { opacity: 0; transform: translateY(-16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.loose-label--resealed {
+  animation: labelResealIn 0.6s ease both;
+  cursor: grab;
+  pointer-events: auto;
+}
+
+.loose-label--resealed.object-glow {
+  animation:
+    labelResealIn 0.6s ease both,
+    lpGlowPulse   2.2s ease-in-out infinite;
+}
+
+/* ── nolabel 향수병 ── */
+@keyframes bottleBounceIn {
+  0%   { transform: translateX(-50%) translateY(60px) scale(0.86); opacity: 0; }
+  55%  { transform: translateX(-50%) translateY(-10px) scale(1.04); opacity: 1; }
+  78%  { transform: translateX(-50%) translateY(4px) scale(0.98); opacity: 1; }
+  100% { transform: translateX(-50%) translateY(0) scale(1); opacity: 1; }
+}
+
+.nolabel-bottle {
+  width: clamp(135px, 11.5vw, 205px);
+  left: 50%;
+  bottom: 18vh;
+  transform: translateX(-50%);
+  opacity: 0;
+  z-index: 12;
+}
+
+.nolabel-bottle--in {
+  animation: bottleBounceIn 1.0s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+}
+
+/* ── sticker_hand01 / 02 ── */
+@keyframes stickerFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes stickerFadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+/* 공통 위치: 화면 하단 중앙 */
+.sticker-hand-01,
+.sticker-hand-02 {
+  width: clamp(620px, 56vw, 1000px);
+  height: auto;
+  left: 50%;
+  bottom: 0;
+  transform: translate(calc(-50% - 1.2vw), 2.5vh);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sticker-hand-01 { z-index: 30; }
+.sticker-hand-02 { z-index: 31; }
+
+/* hand01: 중앙 페이드인 → 페이드아웃 */
+.sticker-hand-01--in {
+  animation:
+    stickerFadeIn  0.7s ease 0.1s both,
+    stickerFadeOut 0.5s ease 1.8s both;
+}
+
+/* hand02: hand01 페이드아웃 시작 무렵 같은 자리에서 crossfade */
+.sticker-hand-02--in {
+  animation:
+    stickerFadeIn  0.6s ease 1.6s both,
+    stickerFadeOut 0.5s ease 2.6s both;
+}
+
+/* ── 완성 향수 ── */
+@keyframes perfumePulse {
+  0%, 100% { filter: drop-shadow(0 0 6px rgba(220, 205, 160, 0.0)); }
+  50%       { filter: drop-shadow(0 0 22px rgba(220, 205, 160, 0.6)); }
+}
+
+@keyframes perfumeDropIntoBox {
+  0%   { opacity: 0; transform: translateX(-50%) translateY(-18px) rotate(45deg); }
+  18%  { opacity: 1; transform: translateX(-50%) translateY(-6px)  rotate(45deg); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(130px) rotate(45deg); }
+}
+
+.finished-perfume {
+  width: clamp(130px, 11vw, 200px);
+  left: 50%;
+  bottom: 9vh;
+  transform: translateX(-50%);
+  opacity: 0;
+  z-index: 12;
+  pointer-events: none;
+  transition:
+    left 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    bottom 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    width 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* 라벨링 중 + 손 퇴장 후: nolabel 병과 동일한 위치/크기로, hand02 등장 시점에 라벨 적용된 모습으로 교체 */
+.finished-perfume--at-bottle {
+  width: clamp(135px, 11.5vw, 205px);
+  bottom: 18vh;
+  z-index: 13;
+  animation: stickerFadeIn 0.4s ease 1.6s both;
+}
+
+.finished-perfume--at-bottle.object-glow {
+  animation:
+    stickerFadeIn 0.4s ease 1.6s both,
+    lpGlowPulse   2.2s ease-in-out infinite;
+}
+
+/* perfumeReady → waitBox: 사라졌다 나타나는 것이 아니라 left/bottom/width/transform 전환으로 슬라이드 이동 */
+.finished-perfume--corner {
+  left: 79vw;
+  bottom: 60vh;
+  width: clamp(120px, 9.5vw, 175px);
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+  cursor: grab;
+  animation: perfumePulse 2.4s ease-in-out infinite;
+}
+
+/* 상자 위에서 45도로 회전된 채 나타나 떨어지며 페이드 아웃 */
+.finished-perfume--packing {
+  left: 50%;
+  bottom: 34vh;
+  width: clamp(95px, 7.5vw, 140px);
+  transform: translateX(-50%) rotate(45deg);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 40;
+  transition: none;
+  animation: perfumeDropIntoBox 0.85s cubic-bezier(0.45, 0, 0.55, 1) both;
+}
+
+/* ── open_box ── */
+@keyframes boxBounceIn {
+  0%   { transform: translateX(-50%) translateY(80px); opacity: 0; }
+  60%  { transform: translateX(-50%) translateY(-12px); opacity: 1; }
+  80%  { transform: translateX(-50%) translateY(5px); }
+  100% { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+
+.open-box {
+  width: clamp(320px, 26vw, 470px);
+  left: 50%;
+  bottom: 16vh;
+  transform: translateX(-50%);
+  opacity: 0;
+  z-index: 11;
+}
+
+.open-box--in {
+  animation: boxBounceIn 1.0s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+}
+
+/* "여기에 담으세요" — 향수를 기다리는 동안 위아래로 살짝 흔들림 */
+@keyframes openBoxInvite {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(-10px); }
+}
+
+.open-box--in.open-box--invite {
+  animation:
+    boxBounceIn   1.0s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both,
+    openBoxInvite 1.8s ease-in-out 1.3s infinite;
+}
+
+/* ── open_box02: 향수가 담긴 채 열려있는 상자 (open_box와 동일 위치/크기) ── */
+@keyframes boxCrossfadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.open-box-02 {
+  width: clamp(320px, 26vw, 470px);
+  left: 50%;
+  bottom: 16vh;
+  transform: translateX(-50%);
+  opacity: 0;
+  z-index: 13;
+}
+
+.open-box-02--in {
+  animation: boxCrossfadeIn 0.5s ease both;
+}
+
+/* ── box_03: 최종 포장 완료, 화면 정중앙 ── */
+@keyframes box03FinalIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes finalGlow {
+  0%, 100% { filter: drop-shadow(0 0 8px rgba(210, 195, 150, 0.0)); }
+  50%       { filter: drop-shadow(0 0 30px rgba(210, 195, 150, 0.35)); }
+}
+
+.ritual-final-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.box-step-03 {
+  position: relative;
+  width: clamp(330px, 27.5vw, 495px);
+  opacity: 0;
+}
+
+.box-step-03--in {
+  animation:
+    box03FinalIn 1.0s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both,
+    finalGlow    3.0s ease-in-out 1.1s infinite;
+}
+
+/* ══════════════════════════════════════════════════
+   ClosingScreen — 체험 종료 인사
+   ══════════════════════════════════════════════════ */
+
+.closing-screen {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.closing-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 58%, rgba(0, 0, 0, 0.22) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── QR / Thank you 카드 ── */
+@keyframes closingCardFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.88);
+    filter: blur(8px) drop-shadow(0 14px 30px rgba(20, 16, 10, 0.38));
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0) drop-shadow(0 14px 30px rgba(20, 16, 10, 0.38));
+  }
+}
+
+/* 카드 + 문구를 하나의 그룹으로 묶어 화면 중앙에 함께 위치 */
+.closing-stage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  z-index: 5;
+}
+
+.closing-card {
+  position: relative;
+  width: clamp(260px, 24vw, 420px);
+  flex-shrink: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.closing-card--in {
+  animation: closingCardFadeIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── 우측 마무리 문구 (좌측 정렬, 타자 효과) ── */
+.closing-copy {
+  position: relative;
+  width: 0;
+  margin-left: 0;
+  overflow: hidden;
+  flex-shrink: 0;
+  text-align: left;
+  opacity: 0;
+  transform: translateX(36px);
+  transition: width 1.3s cubic-bezier(0.22, 1, 0.36, 1),
+              margin-left 1.3s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.6s ease,
+              transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.closing-copy--mounted {
+  width: clamp(420px, 34vw, 640px);
+  margin-left: clamp(48px, 6vw, 110px);
+}
+
+.closing-copy--in {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.closing-copy-line {
+  margin: 0 0 14px 0;
+  min-height: 1.8em;
+  font-family: var(--font-kr-body);
+  font-size: clamp(20px, 1.9vw, 30px);
+  font-weight: 700;
+  line-height: 1.75;
+  letter-spacing: -0.02em;
+  text-align: left;
+  color: rgba(244, 239, 230, 0.92);
+  text-shadow:
+    0 0 18px rgba(0, 0, 0, 0.85),
+    0 0 36px rgba(0, 0, 0, 0.65),
+    0 0 64px rgba(0, 0, 0, 0.45);
+}
+
+.closing-copy-line:last-child {
+  margin-bottom: 0;
+}
+
+.closing-copy-line .typing-cursor {
+  background: rgba(244, 239, 230, 0.85);
+}
